@@ -37,7 +37,16 @@ class DetailActivity : AppCompatActivity() {
         val binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val letterId = "A"
+        /*  EXPLICIT INTENT
+            Retrieve the LETTER from the Intent extras
+            intent.extras.getString returns String? (String or null)
+            so toString() guarantees that the value will be a String
+
+            intent: property of any activity, which keeps a reference to the intent
+                used to launch the activity
+            extras: Bundle object (name-value pairs), containing all the intent extras
+         */
+        val letterId = intent?.extras?.getString(EXTRA_LETTER).toString()
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)

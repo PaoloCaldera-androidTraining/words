@@ -22,8 +22,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wordsapp.databinding.ActivityDetailBinding
 
 
+/*  val letterId = intent?.extras?.getString(EXTRA_LETTER).toString()
+    $intent and $extras properties are nullable, meaning that they can be null objects.
+    (null: absence of value)
+    To safely access the value of a nullable object, put a ? after the name; in this case,
+    if the object is null, the code won't even attempt to access the properties of taht object
+ */
+
 class DetailActivity : AppCompatActivity() {
 
+    // Singleton unique and specific for each class, where you can define constants
     companion object {
         const val EXTRA_LETTER = "key_extra_letter"
     }
@@ -37,7 +45,16 @@ class DetailActivity : AppCompatActivity() {
         val binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val letterId = "A"
+        /*  EXPLICIT INTENT
+            Retrieve the LETTER from the Intent extras
+            intent.extras.getString returns String? (String or null)
+            so toString() guarantees that the value will be a String
+
+            $intent: property of any activity, which keeps a reference to the intent
+                used to launch the activity
+            $extras: Bundle object (name-value pairs), containing all the intent extras
+         */
+        val letterId = intent?.extras?.getString(EXTRA_LETTER).toString()
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)

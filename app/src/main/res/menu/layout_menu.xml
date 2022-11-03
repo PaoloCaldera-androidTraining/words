@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_switch_layout"
+        android:title="@string/action_switch_layout"
+        android:icon="@drawable/ic_grid_layout"
+        app:showAsAction="always"/>
+    <!-- showAsAction tells the system how to show the button. It can be visible in the app bar
+    as an icon or it can be part of the overflow (settings) menu of the app bar -->
+</menu>

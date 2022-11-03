@@ -16,6 +16,8 @@
 package com.example.wordsapp
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -76,13 +78,25 @@ class WordAdapter(private val letterId: String, context: Context) :
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
 
         val item = filteredWords[position]
-        // Needed to call startActivity
-        val context = holder.view.context
 
         // Set the text of the WordViewHolder
         holder.button.text = item
 
+        /*  IMPLICIT INTENT
+            Request the OS for launching an activity by indicating the action that has to be
+            performed. The system then figures out how to fulfill the request, according to
+            the action indicated in the intent definition.
+            Use implicit intents when you don't know the exact activity that has to be launched
+         */
+        holder.button.setOnClickListener {
+            val context = holder.view.context
+            val queryUrl = Uri.parse("${DetailActivity.SEARCH_PREFIX}${holder.button.text}")
+            val intent = Intent(Intent.ACTION_VIEW, queryUrl)
+            context.startActivity(intent)
+        }
+
     }
+
     // Setup custom accessibility delegate to set the text read with
     // an accessibility service
     companion object Accessibility : View.AccessibilityDelegate() {

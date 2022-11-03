@@ -33,6 +33,7 @@ class DetailActivity : AppCompatActivity() {
 
     // Singleton unique and specific for each class, where you can define constants
     companion object {
+        const val SEARCH_PREFIX = "https://www.google.com/search?q="
         const val EXTRA_LETTER = "key_extra_letter"
     }
 

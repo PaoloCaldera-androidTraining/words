@@ -16,7 +16,12 @@
 package com.example.wordsapp
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.GridLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wordsapp.databinding.ActivityMainBinding
@@ -25,6 +30,7 @@ import com.example.wordsapp.databinding.ActivityMainBinding
  * Main Activity and entry point for the app. Displays a RecyclerView of letters.
  */
 class MainActivity : AppCompatActivity() {
+    private var isLinearLayoutManager = true
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +44,37 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = LetterAdapter()
 
+    }
+
+    // Method to inflate the layout of the option menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.layout_menu, menu)
+        return true
+    }
+
+    // Method to describe the action to be performed when the menu item is clicked
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_switch_layout -> {
+                setLayout(item)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun setLayout(item: MenuItem){
+        when (isLinearLayoutManager) {
+            true -> {
+                recyclerView.layoutManager = GridLayoutManager(this, 3)
+                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
+            }
+            false -> {
+                recyclerView.layoutManager = LinearLayoutManager(this)
+                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
+            }
+        }
+        isLinearLayoutManager = !isLinearLayoutManager
     }
 
 }

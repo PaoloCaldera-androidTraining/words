@@ -48,11 +48,17 @@ class MainActivity : AppCompatActivity() {
 
     // Method to inflate the layout of the option menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        /* menuInflater is a variable that the framework is endowed of.
+           Use it to inflate the layout of the menu in the menu object
+         */
         menuInflater.inflate(R.menu.layout_menu, menu)
         return true
     }
 
-    // Method to describe the action to be performed when the menu item is clicked
+    /* Method to describe the action to be performed when the menu item is clicked
+       The clicked item of the menu is passed as argument of the function.
+       Use the when() clause to perform an action, according to the specific item passed
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_switch_layout -> {
@@ -63,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Set the layout of the MainActivity according to the app bar button indication
     fun setLayout(item: MenuItem){
         when (isLinearLayoutManager) {
             true -> {

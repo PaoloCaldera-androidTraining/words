@@ -49,7 +49,7 @@ class LetterListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = binding.recyclerView
-        super.onViewCreated(view, savedInstanceState)
+        recyclerView.adapter = LetterAdapter()
     }
 
 

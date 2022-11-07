@@ -14,15 +14,25 @@
      limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <!-- 1) Navigation Component: NAV HOST -->
+    <!-- The Nav Host is the UI container used to display the various destinations (Fragments)
+     in the activity. FragmentContainerView is the most simple element to host a Fragment;
+     all the Fragment destinations will be displayed in this view -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="16dp" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"/>
+    <!-- name = "<>.NavHostFragment" allows the container view to navigate between fragments -->
+    <!-- defaultNavHost = "true" allows the container to interact with the navigation hierarchy
+     established in the navigation graph -->
+
 </FrameLayout>

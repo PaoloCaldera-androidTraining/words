@@ -21,6 +21,10 @@ import android.view.MenuItem
 import android.widget.GridLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,10 +35,28 @@ import com.example.wordsapp.databinding.ActivityMainBinding
  */
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Get a reference in the code to the Nav Host by using supportFragmentManager
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                as NavHostFragment
+
+        // Get the NavController property associated to the container
+        // Call the setupActionBar... method to maintain the app bar configuration definition
+        navController = navHostFragment.navController
+        setupActionBarWithNavController(navController)
+    }
+
+    // The method, along with the defaultNavHost="true" option inside the xml file,
+    // supports the UP navigation in the NavHost.
+    override fun onSupportNavigateUp(): Boolean {
+        return (navController.navigateUp() || super.onSupportNavigateUp())
     }
 }

@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.wordsapp
+package com.example.wordsapp.adapters
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -25,76 +22,73 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.wordsapp.LetterListFragmentDirections
+import com.example.wordsapp.R
 
 /**
- * Adapter for the [RecyclerView] in [DetailActivity].
+ * Adapter for the [RecyclerView] in [MainActivity].
  */
-class WordAdapter(private val letterId: String, context: Context) :
-    RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
+class LetterAdapter :
+    RecyclerView.Adapter<LetterAdapter.LetterViewHolder>() {
 
-    private val filteredWords: List<String>
+    // Generates a [CharRange] from 'A' to 'Z' and converts it to a list
+    private val list = ('A').rangeTo('Z').toList()
 
-    init {
-        // Retrieve the list of words from res/values/arrays.xml
-        val words = context.resources.getStringArray(R.array.words).toList()
-
-        filteredWords = words
-            // Returns items in a collection if the conditional clause is true,
-            // in this case if an item starts with the given letter,
-            // ignoring UPPERCASE or lowercase.
-            .filter { it.startsWith(letterId, ignoreCase = true) }
-            // Returns a collection that it has shuffled in place
-            .shuffled()
-            // Returns the first n items as a [List]
-            .take(5)
-            // Returns a sorted version of that [List]
-            .sorted()
-    }
-
-    class WordViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    /**
+     * Provides a reference for the views needed to display items in your list.
+     */
+    class LetterViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val button = view.findViewById<Button>(R.id.button_item)
     }
 
-    override fun getItemCount(): Int = filteredWords.size
+    override fun getItemCount(): Int {
+        return list.size
+    }
 
     /**
      * Creates new views with R.layout.item_view as its template
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LetterViewHolder {
         val layout = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.item_view, parent, false)
-
         // Setup custom accessibility delegate to set the text read
         layout.accessibilityDelegate = Accessibility
-
-        return WordViewHolder(layout)
+        return LetterViewHolder(layout)
     }
 
     /**
      * Replaces the content of an existing view with new data
      */
-    override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LetterViewHolder, position: Int) {
+        val item = list.get(position)
+        holder.button.text = item.toString()
 
-        val item = filteredWords[position]
+        /*  EXPLICIT INTENT
+            Request the OS for launching a specific activity that belongs to your own app.
+            Use explicit intents when you know which activity has to be launched.
 
-        // Set the text of the WordViewHolder
-        holder.button.text = item
-
-        /*  IMPLICIT INTENT
-            Request the OS for launching an activity by indicating the action that has to be
-            performed. The system then figures out how to fulfill the request, according to
-            the action indicated in the intent definition.
-            Use implicit intents when you don't know the exact activity that has to be launched
-         */
         holder.button.setOnClickListener {
             val context = holder.view.context
-            val queryUrl = Uri.parse("${WordListFragment.SEARCH_PREFIX}${holder.button.text}")
-            val intent = Intent(Intent.ACTION_VIEW, queryUrl)
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra(DetailActivity.EXTRA_LETTER, holder.button.text.toString())
             context.startActivity(intent)
-        }
+        } */
 
+        /*  3) Navigation Component: NAV CONTROLLER
+
+            SafeArgs plugin generates, according to the nav_graph.xml, the "Directions" classes
+            and the "action" functions that will be used by the NavController to actually perform
+            the transition from one destination to another.
+         */
+        holder.button.setOnClickListener {
+            val action =
+                LetterListFragmentDirections
+                    .actionLetterListFragmentToWordListFragment(holder.button.text.toString())
+            holder.view.findNavController().navigate(action)
+        }
     }
 
     // Setup custom accessibility delegate to set the text read with
@@ -110,7 +104,7 @@ class WordAdapter(private val letterId: String, context: Context) :
             // accessibility service announces "double tap to activate".
             // If a custom string is provided,
             // it announces "double tap to <custom string>".
-            val customString = host.context?.getString(R.string.look_up_word)
+            val customString = host.context?.getString(R.string.look_up_words)
             val customClick =
                 AccessibilityNodeInfo.AccessibilityAction(
                     AccessibilityNodeInfo.ACTION_CLICK,

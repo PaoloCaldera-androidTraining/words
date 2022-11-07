@@ -67,13 +67,13 @@ class LetterAdapter :
         /*  EXPLICIT INTENT
             Request the OS for launching a specific activity that belongs to your own app.
             Use explicit intents when you know which activity has to be launched.
-         */
+
         holder.button.setOnClickListener {
             val context = holder.view.context
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra(LETTER, holder.button.text.toString())
+            intent.putExtra("", holder.button.text.toString())
             context.startActivity(intent)
-        }
+        } */
     }
 
     // Setup custom accessibility delegate to set the text read with

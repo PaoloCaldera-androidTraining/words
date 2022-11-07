@@ -20,7 +20,7 @@ class WordListFragment : Fragment() {
 
 
     companion object {
-        private const val SEARCH_PREFIX = "https://www.google.com/search?q="
+        const val SEARCH_PREFIX = "https://www.google.com/search?q="
     }
 
 
@@ -40,7 +40,7 @@ class WordListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = binding.recyclerView
-        recyclerView.adapter = WordAdapter(LETTER, requireContext())
+        recyclerView.adapter = WordAdapter("", requireContext())
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         recyclerView.addItemDecoration(

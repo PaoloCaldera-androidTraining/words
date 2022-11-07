@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- 2) Navigation Component: NAV GRAPH -->
+<!-- The nav graph is a virtual mapping of the app navigation provided in the nav host.
+ The XML file defines the destinations (in this case Fragments) and the relation between
+ these destinations, and must be linked to the Nav Host -->
+<!-- After creating the nav graph, it is important to REBUILD the project!
+ This will generate additional classes and functions according to the nav graph-->
+
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph.xml">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/letterListFragment">
+
+    <fragment
+        android:id="@+id/letterListFragment"
+        android:name="com.example.wordsapp.LetterListFragment"
+        android:label="fragment_letter_list"
+        tools:layout="@layout/fragment_letter_list" >
+        <action
+            android:id="@+id/action_letterListFragment_to_wordListFragment"
+            app:destination="@id/wordListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wordListFragment"
+        android:name="com.example.wordsapp.WordListFragment"
+        android:label="fragment_word_list"
+        tools:layout="@layout/fragment_word_list" >
+        <!-- A parameter must be passed to the wordListFragment and it is done in a safe way:
+         a string will be expected in the code when navigating to this fragment -->
+        <argument
+            android:name="letter"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

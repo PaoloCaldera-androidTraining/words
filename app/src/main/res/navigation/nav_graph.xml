@@ -16,7 +16,7 @@
     <fragment
         android:id="@+id/letterListFragment"
         android:name="com.example.wordsapp.LetterListFragment"
-        android:label="fragment_letter_list"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_letter_list" >
         <action
             android:id="@+id/action_letterListFragment_to_wordListFragment"
@@ -25,7 +25,7 @@
     <fragment
         android:id="@+id/wordListFragment"
         android:name="com.example.wordsapp.WordListFragment"
-        android:label="fragment_word_list"
+        android:label="@string/detail_prefix"
         tools:layout="@layout/fragment_word_list" >
         <!-- A parameter must be passed to the wordListFragment and it is done in a safe way:
          a string will be expected in the code when navigating to this fragment -->

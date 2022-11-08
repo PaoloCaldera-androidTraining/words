@@ -21,6 +21,10 @@ import android.view.MenuItem
 import android.widget.GridLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,58 +34,29 @@ import com.example.wordsapp.databinding.ActivityMainBinding
  * Main Activity and entry point for the app. Displays a RecyclerView of letters.
  */
 class MainActivity : AppCompatActivity() {
-    private var isLinearLayoutManager = true
-    private lateinit var recyclerView: RecyclerView
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        recyclerView = binding.recyclerView
-        // Sets the LinearLayoutManager of the recyclerview
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = LetterAdapter()
+        // Get a reference in the code to the Nav Host by using supportFragmentManager
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                as NavHostFragment
 
+        // Get the NavController property associated to the container
+        // Call the setupActionBar... method to maintain the app bar configuration definition
+        navController = navHostFragment.navController
+        setupActionBarWithNavController(navController)
     }
 
-    // Method to inflate the layout of the option menu
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        /* menuInflater is a variable that the framework is endowed of.
-           Use it to inflate the layout of the menu in the menu object
-         */
-        menuInflater.inflate(R.menu.layout_menu, menu)
-        return true
+    // The method, along with the defaultNavHost="true" option inside the xml file,
+    // supports the UP navigation in the NavHost.
+    override fun onSupportNavigateUp(): Boolean {
+        return (navController.navigateUp() || super.onSupportNavigateUp())
     }
-
-    /* Method to describe the action to be performed when the menu item is clicked
-       The clicked item of the menu is passed as argument of the function.
-       Use the when() clause to perform an action, according to the specific item passed
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.item_switch_layout -> {
-                setLayout(item)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    // Set the layout of the MainActivity according to the app bar button indication
-    fun setLayout(item: MenuItem){
-        when (isLinearLayoutManager) {
-            true -> {
-                recyclerView.layoutManager = GridLayoutManager(this, 3)
-                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
-            }
-            false -> {
-                recyclerView.layoutManager = LinearLayoutManager(this)
-                item.icon = ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
-            }
-        }
-        isLinearLayoutManager = !isLinearLayoutManager
-    }
-
 }

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.wordsapp
+package com.example.wordsapp.adapters
 
-import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +22,10 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.wordsapp.LetterListFragmentDirections
+import com.example.wordsapp.R
 
 /**
  * Adapter for the [RecyclerView] in [MainActivity].
@@ -50,8 +52,8 @@ class LetterAdapter :
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LetterViewHolder {
         val layout = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.item_view, parent, false)
+            .from(parent.context)
+            .inflate(R.layout.item_view, parent, false)
         // Setup custom accessibility delegate to set the text read
         layout.accessibilityDelegate = Accessibility
         return LetterViewHolder(layout)
@@ -67,12 +69,25 @@ class LetterAdapter :
         /*  EXPLICIT INTENT
             Request the OS for launching a specific activity that belongs to your own app.
             Use explicit intents when you know which activity has to be launched.
-         */
+
         holder.button.setOnClickListener {
             val context = holder.view.context
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra(DetailActivity.EXTRA_LETTER, holder.button.text.toString())
             context.startActivity(intent)
+        } */
+
+        /*  3) Navigation Component: NAV CONTROLLER
+
+            SafeArgs plugin generates, according to the nav_graph.xml, the "Directions" classes
+            and the "action" functions that will be used by the NavController to actually perform
+            the transition from one destination to another.
+         */
+        holder.button.setOnClickListener {
+            val action =
+                LetterListFragmentDirections
+                    .actionLetterListFragmentToWordListFragment(holder.button.text.toString())
+            holder.view.findNavController().navigate(action)
         }
     }
 

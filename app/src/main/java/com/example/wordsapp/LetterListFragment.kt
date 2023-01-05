@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wordsapp.adapters.LetterAdapter
+import com.example.wordsapp.data.SettingsDataStore
 import com.example.wordsapp.databinding.FragmentLetterListBinding
+import kotlinx.coroutines.launch
 
 
 class LetterListFragment : Fragment() {
 
     private var _binding: FragmentLetterListBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var settingsDataStore: SettingsDataStore
 
     private lateinit var recyclerView: RecyclerView
     private var isLinearLayoutManager = true
@@ -37,8 +43,11 @@ class LetterListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        // Initialize the preferences DataStore
+        settingsDataStore = SettingsDataStore(requireContext())
 
         _binding = FragmentLetterListBinding.inflate(inflater, container, false)
         return binding.root
@@ -48,6 +57,13 @@ class LetterListFragment : Fragment() {
     // onViewCreated() is where to bind properties to views
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        settingsDataStore.preferenceFlow.asLiveData().observe(viewLifecycleOwner) {
+            // Once updated the preferences datastore, update also the fragment flag variable
+            isLinearLayoutManager = it
+            setLayout()
+            activity?.invalidateOptionsMenu()
+        }
 
         recyclerView = binding.recyclerView
         recyclerView.adapter = LetterAdapter()
@@ -62,6 +78,7 @@ class LetterListFragment : Fragment() {
     // Method to inflate the layout of the option menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.layout_menu, menu)
+        setIcon(menu.findItem(R.id.item_switch_layout))
     }
 
     /*  Method to describe the action to be performed when the menu item is clicked
@@ -71,26 +88,38 @@ class LetterListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_switch_layout -> {
-                setLayout(item)
+                /*  Lifecycle aware components (activities, fragments) provide coroutine support
+                    for logical scopes: a LifecycleScope is defined for each Lifecycle object. Any
+                    coroutine launched in the lifecycleScope is removed when the Lifecycle object
+                    is destroyed
+                 */
+                lifecycleScope.launch {
+                    // When the different layout is selected, update the preferences DataStore
+                    settingsDataStore.saveLayoutToPreferencesStore(!isLinearLayoutManager,
+                        requireContext())
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    // Set the layout of the MainActivity according to the app bar button indication
-    private fun setLayout(item: MenuItem){
+    // Set the icon of the MainActivity menu according to the boolean flag value
+    private fun setIcon(item: MenuItem) {
         when (isLinearLayoutManager) {
-            true -> {
-                recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
-                item.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_linear_layout)
-            }
-            false -> {
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                item.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid_layout)
-            }
+            true -> item.icon = ContextCompat.getDrawable(requireContext(),
+                R.drawable.ic_linear_layout)
+            false -> item.icon = ContextCompat.getDrawable(requireContext(),
+                R.drawable.ic_grid_layout)
         }
-        isLinearLayoutManager = !isLinearLayoutManager
+    }
+
+    // Set the layout of the MainActivity according to the boolean flag value
+    private fun setLayout(){
+        when (isLinearLayoutManager) {
+            true -> recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
+            false -> recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
 }
